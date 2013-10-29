@@ -1,0 +1,13 @@
+*.class
+*~
+*.DS_Store
+
+# Package Files #
+*.ear
+
+/target
+/.settings
+.classpath
+.project
+/bin
+
