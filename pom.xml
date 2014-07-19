@@ -2,11 +2,22 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.dapurv5.solrpanel</groupId>
-  <artifactId>solrpanel</artifactId>
-  <packaging>jar</packaging>
+  <artifactId>solrpanel</artifactId> 
+  <packaging>war</packaging>
   <version>1.0</version>
   <name>solrpanel Maven Webapp</name>
   <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.tomcat.path>/solr</maven.tomcat.path>
+      <!-- Note that you cannot/should not rename the artifact id because the js files are requested at 
+      /solr/<core name>/admin/file?file=<filename>-->
+    <maven.tomcat.port>8080</maven.tomcat.port>
+    <solr.war.target.folder>${project.build.directory}/${project.build.finalName}</solr.war.target.folder>
+    <solr.war.exploded.folder>${solr.war.target.folder}</solr.war.exploded.folder>
+  </properties>  
+  
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -14,7 +25,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
   </dependency>
-
 
   <dependency>
       <groupId>org.apache.solr</groupId>
@@ -43,7 +53,105 @@
 
 
   </dependencies>
-  <build>
-    <finalName>solrpanel</finalName>
-  </build>
+
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+
+		<finalName>solrpanel</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<verbose>true</verbose>
+					<compilerVersion>1.6</compilerVersion>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<!-- plugins to build SOLR's warfile -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<attachClasses>true</attachClasses>
+					<warSourceDirectory>src/main/resources/web</warSourceDirectory>
+					<webXml>src/main/resources/web/WEB-INF/web.xml</webXml>
+					<archive>
+						<manifestEntries>
+							<Extension-Name>org.apache.solr</Extension-Name>
+							<Implementation-Title>org.apache.solr</Implementation-Title>
+							<Specification-Title>Apache Solr Search Server</Specification-Title>
+							<Specification-Version>4.6.1</Specification-Version>
+							<Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
+							<X-Compile-Source-JDK>1.6</X-Compile-Source-JDK>
+							<X-Compile-Target-JDK>1.6</X-Compile-Target-JDK>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<!-- jetty plugins -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<warDirectory>${solr.war.exploded.folder}</warDirectory>
+					<systemProperties>
+						<solr.solr.home>${solr.solr.home}</solr.solr.home>
+						<solr.top.dir>${solr.top.dir}</solr.top.dir>
+					</systemProperties>
+				</configuration>
+
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>make-a-jar</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+  
+  
+  
+  
+  
+  
+  
 </project>
