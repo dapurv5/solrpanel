@@ -47,6 +47,7 @@ public class AnalyzerUtil {
   *    </lst>
   * 
   * Note: This chain must have a single tokenizer followed by a list of filters.
+  *
   */
   public Analyzer buildAnalyzerFromConf(NamedList analyzerConf, SolrCore solrCore) throws IOException {
     Version luceneMatchVersion = solrCore.getSolrConfig().luceneMatchVersion;
