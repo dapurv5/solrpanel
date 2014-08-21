@@ -61,13 +61,13 @@ public class AnalyzerUtil {
       params.put("luceneMatchVersion", luceneMatchVersion.toString());
       
       if(analyzerConf.getName(i).equals("tokenizer")) {               
-        tokenizerFactory = loader.newInstance(classname, TokenizerFactory.class, new String[]{}, new Class[] { Map.class }, new Object[] { params });
+        tokenizerFactory = TokenizerFactory.forName(classname, params);
         if (tokenizerFactory instanceof ResourceLoaderAware) {
           ((ResourceLoaderAware)tokenizerFactory).inform(loader);
         }
 
       } else if(analyzerConf.getName(i).equals("filter")) {        
-        TokenFilterFactory filterFactory = loader.newInstance(classname, TokenFilterFactory.class, new String[]{}, new Class[] { Map.class }, new Object[] { params });
+        TokenFilterFactory filterFactory = TokenFilterFactory.forName(classname, params);
         if (tokenizerFactory instanceof ResourceLoaderAware) {
           ((ResourceLoaderAware)filterFactory).inform(loader);
         }
