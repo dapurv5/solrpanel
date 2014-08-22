@@ -75,6 +75,7 @@ public class AnalyzerUtil {
         if (tokenizerFactory instanceof ResourceLoaderAware) {
           ((ResourceLoaderAware)filterFactory).inform(loader);
         }
+        filterFactories.add(filterFactory);
       }
     }
     TokenizerChain analyzer = new TokenizerChain(tokenizerFactory,
