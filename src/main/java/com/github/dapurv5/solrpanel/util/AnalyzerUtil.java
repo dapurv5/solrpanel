@@ -72,7 +72,7 @@ public class AnalyzerUtil {
 
       } else if(analyzerConf.getName(i).equals("filter")) {        
         TokenFilterFactory filterFactory = loader.newInstance(classname, TokenFilterFactory.class, new String[]{}, new Class[] { Map.class }, new Object[] { params });
-        if (tokenizerFactory instanceof ResourceLoaderAware) {
+        if (filterFactory instanceof ResourceLoaderAware) {
           ((ResourceLoaderAware)filterFactory).inform(loader);
         }
         filterFactories.add(filterFactory);
